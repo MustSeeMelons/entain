@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap')
+
+$primary-font: "Open Sans"
+
+/* Text colors to use in dark/bright environments */
+$bright-text: #f1f1f1
+$dark-text: #141414
+
+/* Basic theme colors */
+$primary-color: #ffffff
+$secondary-color: #7c7c7c
+$accent-color: #006fff
+$warning: #F03A3E
+
+/* Other */
+$anim-transition-ms: 200
+
+/* Breakpoints */
+$screen-sm: 480px
+$screen-md: 768px
+$screen-lg: 1279px
+
+@mixin sm
+    @media (min-width: #{$screen-sm})
+        @content
+
+@mixin md
+    @media (min-width: #{$screen-md})
+        @content
+
+@mixin lg
+    @media (min-width: #{$screen-lg})
+        @content

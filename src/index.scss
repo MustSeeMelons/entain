@@ -1,0 +1,45 @@
+@import "variables.sass";
+
+/* XXX Perhaps there is a good CSS reset to use? */
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    font-family: $primary-font;
+}
+
+ul,
+li {
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+p {
+    display: block;
+    margin: 0;
+}
+
+*:disabled {
+    cursor: not-allowed !important;
+}
+
+button {
+    outline: none;
+    border: none;
+    background-color: unset;
+    font-family: $primary-font;
+    padding: 0;
+    margin: 0;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
