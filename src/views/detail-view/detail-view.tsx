@@ -51,7 +51,10 @@ export const DetailView = () => {
                             Released: <b>{movie?.release_date}</b>
                         </p>
                         <p>
-                            Rating: <b>{movie?.vote_average.toFixed(2)}/10</b>
+                            Rating:{" "}
+                            <b>
+                                {movie?.vote_average.toFixed(2)}/10 ({movie.vote_count} Votes)
+                            </b>
                         </p>
                     </div>
                 </>

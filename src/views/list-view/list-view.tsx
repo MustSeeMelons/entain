@@ -1,5 +1,11 @@
-import { ItemList } from "../../components/movie-list/item-list";
+import { MovieList } from "../../components/movie-list/movie-list";
+import { Search } from "../../components/search/search";
 
 export const ListView = () => {
-    return <ItemList />;
+    return (
+        <>
+            <Search />
+            <MovieList />
+        </>
+    );
 };

@@ -1,29 +1,22 @@
 import React from "react";
 import styles from "./page-controls.module.sass";
-import { useAppDispatch, useAppSelector } from "../../../store/store";
-import { setOurDiscoverMoviesPage } from "../../../store/global-slice";
 
-type PageControlsProps = React.HTMLAttributes<HTMLElement>;
+interface IPageControlsComponentProps {
+    onNextClick: () => void;
+    onPrevClick: () => void;
+    currPage: number;
+}
 
-export const PageControls: React.FC<PageControlsProps> = () => {
-    const ourPage = useAppSelector((state) => state.globalReducer.ourDiscoverMoviesPage);
-    const dispatch = useAppDispatch();
+type PageControlsProps = IPageControlsComponentProps & React.HTMLAttributes<HTMLElement>;
 
-    // TODO render a few buttons for specific pages
-
+export const PageControls: React.FC<PageControlsProps> = (props) => {
     return (
         <div className={styles.page_controls}>
-            <button
-                className={styles.control}
-                onClick={() => dispatch(setOurDiscoverMoviesPage(ourPage - 1))}
-            >
+            <button className={styles.control} onClick={props.onPrevClick}>
                 Prev
             </button>
-            <p>{ourPage}</p>
-            <button
-                className={styles.control}
-                onClick={() => dispatch(setOurDiscoverMoviesPage(ourPage + 1))}
-            >
+            <p>{props.currPage}</p>
+            <button className={styles.control} onClick={props.onNextClick}>
                 Next
             </button>
         </div>

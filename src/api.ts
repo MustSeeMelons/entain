@@ -14,6 +14,12 @@ interface AppApi {
         err: ErrCallback
     ) => void;
     fetchMovieDetails: (id: string, success: ResponseCallback, err: ErrCallback) => void;
+    fetchMovieSearch: (
+        text: string,
+        searchPage: number,
+        success: ResponseCallback,
+        err: ErrCallback
+    ) => void;
 }
 
 export const appApi: AppApi = {
@@ -27,6 +33,20 @@ export const appApi: AppApi = {
     fetchMovieDetails: (id: string, success: ResponseCallback, err: ErrCallback) => {
         if (id) {
             fetch(`https://api.themoviedb.org/3/movie/${id}`, {
+                headers,
+            })
+                .then(success)
+                .catch(err);
+        }
+    },
+    fetchMovieSearch: (
+        text: string,
+        searchPage: number,
+        success: ResponseCallback,
+        err: ErrCallback
+    ) => {
+        if (text) {
+            fetch(`https://api.themoviedb.org/3/search/movie?query=${text}&page=${searchPage}`, {
                 headers,
             })
                 .then(success)

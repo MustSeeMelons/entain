@@ -22,3 +22,19 @@ export const getDiscoverMovies = createSelector(
         }
     }
 );
+
+export const getSearchMovies = createSelector(
+    (state: AppState) => state,
+    (state) => {
+        const ourPage = state.globalReducer.ourSearchMoviesPage;
+        const apiPage = state.globalReducer.apiSearchMoviesPage;
+
+        const apiPageMovies = state.globalReducer.searchMovies[apiPage] ?? [];
+
+        if (ourPage % 2 === 0) {
+            return apiPageMovies.slice(OUR_PER_PAGE);
+        } else {
+            return apiPageMovies.slice(0, OUR_PER_PAGE);
+        }
+    }
+);
