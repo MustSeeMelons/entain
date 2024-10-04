@@ -4,6 +4,7 @@ import styles from "./app.module.sass";
 import {
     addDiscoverPageEntries,
     IMovieListResponse,
+    setError,
     setUiLocked,
     setUiUnlocking,
 } from "../store/global-slice";
@@ -12,18 +13,26 @@ import { Route, Routes } from "react-router-dom";
 import { ListView } from "../views/list-view/list-view";
 import { DetailView } from "../views/detail-view/detail-view";
 import { appApi } from "../api";
-import { isUiLockedSelector } from "../selectors/global-selectors";
+import {
+    discoverMoviesCachedPagesSelector,
+    isUiLockedSelector,
+} from "../selectors/global-selectors";
 import { Curtain } from "../components/curtain/curtain";
-import { UNLOCK_DELAY } from "../definitions";
+import { ANIMATION_DELAY, UNLOCK_DELAY } from "../definitions";
 
 function App() {
     const dispatch = useAppDispatch();
     const isUiLocked = useAppSelector(isUiLockedSelector);
     const isUiUnlocking = useAppSelector((state) => state.globalReducer.isUiUnlocking);
     const discoverPage = useAppSelector((state) => state.globalReducer.apiDiscoverMoviesPage);
+    const cachedPages = useAppSelector(discoverMoviesCachedPagesSelector);
 
     useEffect(() => {
-        // TODO check if we have page in state already
+        let timeRef: number;
+
+        if (cachedPages.indexOf(discoverPage) !== -1) {
+            return;
+        }
 
         dispatch(setUiLocked(true));
 
@@ -33,26 +42,35 @@ function App() {
                 if (response.ok) {
                     const data = (await response.json()) as IMovieListResponse;
 
-                    dispatch(setUiUnlocking(true));
-                    dispatch(addDiscoverPageEntries({ page: data.page, entries: data.results }));
+                    timeRef = setTimeout(() => {
+                        dispatch(setUiUnlocking(true));
+                        dispatch(
+                            addDiscoverPageEntries({ page: data.page, entries: data.results })
+                        );
 
-                    setTimeout(() => {
-                        dispatch(setUiLocked(false));
-                        dispatch(setUiUnlocking(false));
+                        timeRef = setTimeout(() => {
+                            dispatch(setUiLocked(false));
+                            dispatch(setUiUnlocking(false));
+                        }, ANIMATION_DELAY);
                     }, UNLOCK_DELAY);
                 } else {
-                    // TODO show catastrophic error
+                    dispatch(setError(true));
                 }
             },
             (_reason) => {
-                // TODO show catastrophic error
+                dispatch(setError(true));
             }
         );
+
+        return () => {
+            clearTimeout(timeRef);
+        };
     }, [discoverPage]);
 
     return (
         <div className={styles.app}>
             <Header />
+            {/* TODO show error if it occured */}
             {isUiLocked && <Curtain className={isUiUnlocking ? "disappear" : ""} />}
             <Routes>
                 <Route path="/" element={<ListView />} />

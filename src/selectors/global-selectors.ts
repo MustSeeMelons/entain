@@ -7,6 +7,16 @@ export const isUiLockedSelector = createSelector(
     (state) => state.globalReducer.isUiLocked
 );
 
+export const ourSearchMoviesPageSelector = createSelector(
+    (state: AppState) => state,
+    (state) => state.globalReducer.ourSearchMoviesPage
+);
+
+export const ourDiscoverMoviesPageSelector = createSelector(
+    (state: AppState) => state,
+    (state) => state.globalReducer.ourDiscoverMoviesPage
+);
+
 export const getDiscoverMovies = createSelector(
     (state: AppState) => state,
     (state) => {
@@ -23,6 +33,8 @@ export const getDiscoverMovies = createSelector(
     }
 );
 
+// XXX basically the same as `getDiscoverMovies`, keeping them seperate for easier niche updates on each
+// XXX imho some repetition is fine if it is short enough
 export const getSearchMovies = createSelector(
     (state: AppState) => state,
     (state) => {
@@ -36,5 +48,25 @@ export const getSearchMovies = createSelector(
         } else {
             return apiPageMovies.slice(0, OUR_PER_PAGE);
         }
+    }
+);
+
+export const discoverMoviesCachedPagesSelector = createSelector(
+    (state: AppState) => state,
+    (state) => {
+        return Object.keys(state.globalReducer.discoverMovies).reduce<number[]>((acc, curr) => {
+            acc.push(+curr);
+            return acc;
+        }, []);
+    }
+);
+
+export const searchMoviesCachedPagesSelector = createSelector(
+    (state: AppState) => state,
+    (state) => {
+        return Object.keys(state.globalReducer.searchMovies).reduce<number[]>((acc, curr) => {
+            acc.push(+curr);
+            return acc;
+        }, []);
     }
 );

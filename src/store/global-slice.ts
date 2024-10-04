@@ -45,6 +45,7 @@ export interface IGlobalState {
     searchTerm: string;
     searchItemCount: number;
     searchPageCount: number;
+    isError: boolean;
 }
 
 const initialState: IGlobalState = {
@@ -59,6 +60,7 @@ const initialState: IGlobalState = {
     searchTerm: "",
     searchPageCount: 0,
     searchItemCount: 0,
+    isError: false,
 };
 
 const globalSlice = createSlice({
@@ -131,6 +133,9 @@ const globalSlice = createSlice({
             state.searchItemCount = action.payload.itemCount;
             state.searchPageCount = action.payload.pageCount;
         },
+        setError: (state: IGlobalState, action: PayloadAction<boolean>) => {
+            state.isError = action.payload;
+        },
     },
 });
 
@@ -146,5 +151,6 @@ export const {
     setOurSearchMoviesPage,
     setSearchTerm,
     setSearchDetails,
+    setError,
 } = globalSlice.actions;
 export { reducer as globalReducer };

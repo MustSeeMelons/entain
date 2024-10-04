@@ -1,34 +1,36 @@
 import React, { useRef } from "react";
 import styles from "./movie-list.module.sass";
 import { useAppDispatch, useAppSelector } from "../../store/store";
-import { getDiscoverMovies, getSearchMovies } from "../../selectors/global-selectors";
 import { MovieItem } from "./movie-item/movie-item";
 import { PageControls } from "./page-controls/page-controls";
-import {
-    IDiscoverMovieEtry,
-    setOurDiscoverMoviesPage,
-    setOurSearchMoviesPage,
-} from "../../store/global-slice";
+import { IDiscoverMovieEtry, IGlobalState } from "../../store/global-slice";
 
-// TODO split into two components, reusing styles
-export const MovieList: React.FC = () => {
-    const ourDiscoverPage = useAppSelector((state) => state.globalReducer.ourDiscoverMoviesPage);
-    const ourSearchPage = useAppSelector((state) => state.globalReducer.ourSearchMoviesPage);
+type MoviePageSelector = (state: { globalReducer: IGlobalState }) => number;
+type MovieSelector = (state: { globalReducer: IGlobalState }) => IDiscoverMovieEtry[];
+
+interface ISearchMovieListComponentProps {
+    pageSelector: MoviePageSelector;
+    movieSelector: MovieSelector;
+    setPageAction: (payload: number) => {
+        payload: number;
+        type: string;
+    };
+}
+
+// Renders a list of movies from the provided data source functions
+export const MovieList: React.FC<ISearchMovieListComponentProps> = (props) => {
+    // XXX if this approach turns out constraining, we can always package the logic into a hook and have
+    // XXX seperate `render` components instead
+    const page = useAppSelector(props.pageSelector);
     const dispatch = useAppDispatch();
 
-    const movies = useAppSelector(getDiscoverMovies);
-    const searchMovies = useAppSelector(getSearchMovies);
-
-    const isSearchMode = searchMovies.length > 0;
-
-    // Prioritize showhing search
-    const moviesToUse = searchMovies.length > 0 ? searchMovies : movies;
+    const movies = useAppSelector(props.movieSelector);
 
     const cachedMovies = useRef<IDiscoverMovieEtry[]>([]);
 
     // Update our cache only if we have movies, for smoother page switching
-    if (moviesToUse.length > 0) {
-        cachedMovies.current = moviesToUse;
+    if (movies.length > 0) {
+        cachedMovies.current = movies;
     }
 
     return (
@@ -40,21 +42,9 @@ export const MovieList: React.FC = () => {
                 })}
             </ul>
             <PageControls
-                currPage={isSearchMode ? ourSearchPage : ourDiscoverPage}
-                onPrevClick={() =>
-                    dispatch(
-                        isSearchMode
-                            ? setOurSearchMoviesPage(ourSearchPage - 1)
-                            : setOurDiscoverMoviesPage(ourDiscoverPage - 1)
-                    )
-                }
-                onNextClick={() =>
-                    dispatch(
-                        isSearchMode
-                            ? setOurSearchMoviesPage(ourSearchPage + 1)
-                            : setOurDiscoverMoviesPage(ourDiscoverPage + 1)
-                    )
-                }
+                currPage={page}
+                onPrevClick={() => dispatch(props.setPageAction(page - 1))}
+                onNextClick={() => dispatch(props.setPageAction(page + 1))}
             />
         </>
     );

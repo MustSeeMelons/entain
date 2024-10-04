@@ -1,13 +1,19 @@
 # Entain Practical Task
 
-## Extensions:
-- Prettier: Code formatting
+## VSC Extensions:
+- Prettier: code formatting
+- Sass: .sass file highlighting (syler.sass-indented)
+- SCSS IntelliSense: .scss/sass autocomplete
 
-## Other:
-- npm install -D sass
+## How To Run
+
+### Prerequisites
+
+NodeJS 20+, recommned using NVM (available on all paltforms)
 
 ## TODO
 
+TODO tests
 Figure out how to get SCSS module autocomplete working in .tsx's
 
 ### Vite Original Readme Below

@@ -7,12 +7,14 @@ import {
     addSearchPageEntries,
     clearSearch,
     IMovieListResponse,
+    setError,
     setSearchDetails,
     setSearchTerm,
     setUiLocked,
     setUiUnlocking,
 } from "../../store/global-slice";
-import { UNLOCK_DELAY } from "../../definitions";
+import { ANIMATION_DELAY, UNLOCK_DELAY } from "../../definitions";
+import { searchMoviesCachedPagesSelector } from "../../selectors/global-selectors";
 
 type SearchProps = React.HTMLAttributes<HTMLInputElement>;
 
@@ -21,67 +23,53 @@ export const Search: React.FC<SearchProps> = () => {
     const searchPage = useAppSelector((state) => state.globalReducer.apiSearchMoviesPage);
     const searchTerm = useAppSelector((state) => state.globalReducer.searchTerm);
     const resultCount = useAppSelector((state) => state.globalReducer.searchItemCount);
+    const cachedPages = useAppSelector(searchMoviesCachedPagesSelector);
 
-    // TODO extract into response handler
+    const searchApiCallHandler = useCallback(async (response: Response) => {
+        if (response.ok) {
+            const data = (await response.json()) as IMovieListResponse;
+
+            setTimeout(() => {
+                dispatch(setUiUnlocking(true));
+                dispatch(addSearchPageEntries({ page: data.page, entries: data.results }));
+
+                setTimeout(() => {
+                    dispatch(setUiLocked(false));
+                    dispatch(
+                        setSearchDetails({
+                            itemCount: data.total_results,
+                            pageCount: data.total_pages,
+                        })
+                    );
+                    dispatch(setUiUnlocking(false));
+                }, ANIMATION_DELAY);
+            }, UNLOCK_DELAY);
+        }
+    }, []);
+
     useEffect(() => {
-        dispatch(setUiLocked(true));
+        if (cachedPages.indexOf(searchPage) !== -1) {
+            return;
+        }
 
-        appApi.fetchMovieSearch(
-            searchTerm,
-            searchPage,
-            async (response) => {
-                if (response.ok) {
-                    const data = (await response.json()) as IMovieListResponse;
+        if (searchTerm) {
+            dispatch(setUiLocked(true));
 
-                    dispatch(setUiUnlocking(true));
-                    dispatch(addSearchPageEntries({ page: data.page, entries: data.results }));
-
-                    setTimeout(() => {
-                        dispatch(setUiLocked(false));
-                        dispatch(
-                            setSearchDetails({
-                                itemCount: data.total_results,
-                                pageCount: data.total_pages,
-                            })
-                        );
-                        dispatch(setUiUnlocking(false));
-                    }, UNLOCK_DELAY);
-                }
-            },
-            (_reason) => {}
-        );
+            appApi.fetchMovieSearch(searchTerm, searchPage, searchApiCallHandler, (_reason) => {
+                setError(true);
+            });
+        }
     }, [searchPage]);
 
     const performSearch = useCallback(
         debounce((text: string) => {
-            dispatch(setUiLocked(true));
+            if (text) {
+                dispatch(setUiLocked(true));
 
-            appApi.fetchMovieSearch(
-                text,
-                1,
-                async (response: Response) => {
-                    if (response.ok) {
-                        const data = (await response.json()) as IMovieListResponse;
-
-                        dispatch(setUiUnlocking(true));
-                        dispatch(addSearchPageEntries({ page: data.page, entries: data.results }));
-
-                        setTimeout(() => {
-                            dispatch(setUiLocked(false));
-                            dispatch(
-                                setSearchDetails({
-                                    itemCount: data.total_results,
-                                    pageCount: data.total_pages,
-                                })
-                            );
-                            dispatch(setUiUnlocking(false));
-                        }, UNLOCK_DELAY);
-                    }
-                },
-                (_reason) => {
-                    // TODO show error
-                }
-            );
+                appApi.fetchMovieSearch(text, 1, searchApiCallHandler, (_reason) => {
+                    dispatch(setError(true));
+                });
+            }
         }, 300),
         []
     );
