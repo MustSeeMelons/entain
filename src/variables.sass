@@ -12,8 +12,26 @@ $secondary-color: #7c7c7c
 $accent-color: #006fff
 $warning: #F03A3E
 
-/* Other */
-$anim-transition-ms: 200
+/* Animations */
+$anim-transition-ms: 200ms
+
+@keyframes appear
+    0%
+        opacity: 0
+    100%
+        opacity: 1
+
+@keyframes disappear
+    0%
+        opacity: 1
+    100%
+        opacity: 0
+
+.appear
+    animation: appear ($anim-transition-ms) linear forwards
+
+.disappear
+    animation: disappear ($anim-transition-ms) linear forwards
 
 /* Breakpoints */
 $screen-sm: 480px
