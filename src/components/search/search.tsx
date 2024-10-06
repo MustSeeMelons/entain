@@ -13,7 +13,7 @@ import {
     setUiLocked,
     setUiUnlocking,
 } from "../../store/global-slice";
-import { ANIMATION_DELAY, UNLOCK_DELAY } from "../../definitions";
+import { ANIMATION_DELAY, DEBOUNCE_AMOUNT, UNLOCK_DELAY } from "../../definitions";
 import { searchMoviesCachedPagesSelector } from "../../selectors/global-selectors";
 
 type SearchProps = React.HTMLAttributes<HTMLInputElement>;
@@ -32,15 +32,15 @@ export const Search: React.FC<SearchProps> = () => {
             setTimeout(() => {
                 dispatch(setUiUnlocking(true));
                 dispatch(addSearchPageEntries({ page: data.page, entries: data.results }));
+                dispatch(
+                    setSearchDetails({
+                        itemCount: data.total_results,
+                        pageCount: data.total_pages,
+                    })
+                );
 
                 setTimeout(() => {
                     dispatch(setUiLocked(false));
-                    dispatch(
-                        setSearchDetails({
-                            itemCount: data.total_results,
-                            pageCount: data.total_pages,
-                        })
-                    );
                     dispatch(setUiUnlocking(false));
                 }, ANIMATION_DELAY);
             }, UNLOCK_DELAY);
@@ -70,17 +70,25 @@ export const Search: React.FC<SearchProps> = () => {
                     dispatch(setError(true));
                 });
             }
-        }, 300),
+        }, DEBOUNCE_AMOUNT),
         []
     );
+
+    const renderResultCount = () => {
+        if (searchTerm) {
+            return <p>{resultCount} Results</p>;
+        }
+    };
 
     return (
         <div className={styles.search}>
             <p>Search: </p>
             <input
+                aria-label="search"
                 className={styles.search_input}
                 placeholder="for a movie"
                 value={searchTerm}
+                type="text"
                 onChange={(e) => {
                     const value = e.target.value;
 
@@ -92,7 +100,7 @@ export const Search: React.FC<SearchProps> = () => {
                     }
                 }}
             />
-            {searchTerm && <p>{resultCount} Results</p>}
+            {renderResultCount()}
         </div>
     );
 };

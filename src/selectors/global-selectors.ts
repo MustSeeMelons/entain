@@ -70,3 +70,10 @@ export const searchMoviesCachedPagesSelector = createSelector(
         }, []);
     }
 );
+
+export const isSearchModeSelector = createSelector(
+    (state: AppState) => state,
+    (state) => {
+        return state.globalReducer.searchTerm !== "";
+    }
+);

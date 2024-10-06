@@ -2,3 +2,5 @@
 export const UNLOCK_DELAY = 400;
 // Appear/dissapear animation time
 export const ANIMATION_DELAY = 350;
+
+export const DEBOUNCE_AMOUNT = 400;

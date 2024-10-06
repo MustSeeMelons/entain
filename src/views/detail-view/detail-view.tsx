@@ -13,7 +13,7 @@ export const DetailView = () => {
     let { id } = useParams();
 
     const movies = useAppSelector(getDiscoverMovies);
-    const [movie, setMovie] = useState(() => movies.find((movie) => `${movie.id}ss` === id));
+    const [movie, setMovie] = useState(() => movies.find((movie) => `${movie.id}` === id));
 
     useEffect(() => {
         if (!movie) {

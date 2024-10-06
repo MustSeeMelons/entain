@@ -26,9 +26,10 @@ function App() {
     const isUiUnlocking = useAppSelector((state) => state.globalReducer.isUiUnlocking);
     const discoverPage = useAppSelector((state) => state.globalReducer.apiDiscoverMoviesPage);
     const cachedPages = useAppSelector(discoverMoviesCachedPagesSelector);
+    const isErr = useAppSelector((state) => state.globalReducer.isError);
 
     useEffect(() => {
-        let timeRef: number;
+        let timeRef: NodeJS.Timeout;
 
         if (cachedPages.indexOf(discoverPage) !== -1) {
             return;
@@ -70,8 +71,7 @@ function App() {
     return (
         <div className={styles.app}>
             <Header />
-            {/* TODO show error if it occured */}
-            {isUiLocked && <Curtain className={isUiUnlocking ? "disappear" : ""} />}
+            {isUiLocked && <Curtain isErr={isErr} className={isUiUnlocking ? "disappear" : ""} />}
             <Routes>
                 <Route path="/" element={<ListView />} />
                 <Route path="/movie/:id" element={<DetailView />} />

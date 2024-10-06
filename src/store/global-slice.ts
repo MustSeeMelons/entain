@@ -107,31 +107,37 @@ const globalSlice = createSlice({
         },
         addSearchPageEntries: (
             state: IGlobalState,
-            action: PayloadAction<{ page: number; entries: IDiscoverMovieEtry[] }>
+            action: PayloadAction<{ page?: number; entries?: IDiscoverMovieEtry[] }>
         ) => {
-            state.searchMovies[action.payload.page] = action.payload.entries;
+            if (action.payload.page !== undefined) {
+                state.searchMovies[action.payload.page] = action.payload.entries ?? [];
+            }
         },
         clearSearch: (state) => {
             state.searchMovies = {};
             state.ourSearchMoviesPage = 1;
             state.apiSearchMoviesPage = 1;
+            state.searchItemCount = 0;
+            state.searchPageCount;
             state.searchTerm = "";
         },
         addDiscoverPageEntries: (
             state: IGlobalState,
-            action: PayloadAction<{ page: number; entries: IDiscoverMovieEtry[] }>
+            action: PayloadAction<{ page?: number; entries?: IDiscoverMovieEtry[] }>
         ) => {
-            state.discoverMovies[action.payload.page] = action.payload.entries;
+            if (action.payload.page !== undefined) {
+                state.discoverMovies[action.payload.page] = action.payload.entries ?? [];
+            }
         },
         setSearchTerm: (state: IGlobalState, action: PayloadAction<string>) => {
             state.searchTerm = action.payload;
         },
         setSearchDetails: (
             state: IGlobalState,
-            action: PayloadAction<{ pageCount: number; itemCount: number }>
+            action: PayloadAction<{ pageCount?: number; itemCount?: number }>
         ) => {
-            state.searchItemCount = action.payload.itemCount;
-            state.searchPageCount = action.payload.pageCount;
+            state.searchItemCount = action.payload.itemCount ?? 0;
+            state.searchPageCount = action.payload.pageCount ?? 0;
         },
         setError: (state: IGlobalState, action: PayloadAction<boolean>) => {
             state.isError = action.payload;

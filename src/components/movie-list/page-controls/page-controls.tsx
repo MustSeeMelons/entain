@@ -12,7 +12,11 @@ type PageControlsProps = IPageControlsComponentProps & React.HTMLAttributes<HTML
 export const PageControls: React.FC<PageControlsProps> = (props) => {
     return (
         <div className={styles.page_controls}>
-            <button className={styles.control} onClick={props.onPrevClick}>
+            <button
+                disabled={props.currPage === 1}
+                className={styles.control}
+                onClick={props.onPrevClick}
+            >
                 Prev
             </button>
             <p>{props.currPage}</p>

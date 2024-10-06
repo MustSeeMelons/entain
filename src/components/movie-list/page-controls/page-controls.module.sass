@@ -18,8 +18,12 @@
     border-radius: 4px
     color: $dark-text
 
-    &:hover, &:focus-visible
-        cursor: pointer
-        opacity: 0.8
-        background-color: $accent-color
-        color: $bright-text
+    &:enabled
+        &:hover, &:focus-visible
+            cursor: pointer
+            opacity: 0.8
+            background-color: $accent-color
+            color: $bright-text
+
+    &:disabled
+        opacity: 0.5

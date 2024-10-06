@@ -6,14 +6,16 @@
 - SCSS IntelliSense: .scss/sass autocomplete
 
 ## How To Run
+- npm i
+- npm run dev
+- npm t
 
 ### Prerequisites
 
 NodeJS 20+, recommned using NVM (available on all paltforms)
 
-## TODO
+## Notes
 
-TODO tests
 Figure out how to get SCSS module autocomplete working in .tsx's
 
 ### Vite Original Readme Below
