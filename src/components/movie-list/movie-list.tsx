@@ -8,9 +8,11 @@ import { isUiLockedSelector } from "../../selectors/global-selectors";
 
 type MoviePageSelector = (state: { globalReducer: IGlobalState }) => number;
 type MovieSelector = (state: { globalReducer: IGlobalState }) => IDiscoverMovieEtry[];
+type PageCountSelector = MoviePageSelector;
 
 interface ISearchMovieListComponentProps {
     pageSelector: MoviePageSelector;
+    pageCountSelector: PageCountSelector;
     movieSelector: MovieSelector;
     setPageAction: (payload: number) => {
         payload: number;
@@ -23,6 +25,7 @@ export const MovieList: React.FC<ISearchMovieListComponentProps> = (props) => {
     // XXX if this approach turns out constraining, we can always package the logic into a hook and have
     // XXX seperate `render` components instead
     const page = useAppSelector(props.pageSelector);
+    const pageCount = useAppSelector(props.pageCountSelector);
     const isUiLocked = useAppSelector(isUiLockedSelector);
     const dispatch = useAppDispatch();
 
@@ -46,6 +49,7 @@ export const MovieList: React.FC<ISearchMovieListComponentProps> = (props) => {
                     </ul>
                     <PageControls
                         currPage={page}
+                        pageCount={pageCount}
                         onPrevClick={() => dispatch(props.setPageAction(page - 1))}
                         onNextClick={() => dispatch(props.setPageAction(page + 1))}
                     />

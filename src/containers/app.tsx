@@ -4,6 +4,7 @@ import styles from "./app.module.sass";
 import {
     addDiscoverPageEntries,
     IMovieListResponse,
+    setDiscoverDetails,
     setError,
     setUiLocked,
     setUiUnlocking,
@@ -45,6 +46,7 @@ function App() {
 
                     timeRef = setTimeout(() => {
                         dispatch(setUiUnlocking(true));
+                        dispatch(setDiscoverDetails(data.total_pages));
                         dispatch(
                             addDiscoverPageEntries({ page: data.page, entries: data.results })
                         );

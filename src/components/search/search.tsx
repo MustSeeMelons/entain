@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styles from "./search.module.sass";
 import debounce from "lodash.debounce";
 import { appApi } from "../../api";
@@ -24,6 +24,12 @@ export const Search: React.FC<SearchProps> = () => {
     const searchTerm = useAppSelector((state) => state.globalReducer.searchTerm);
     const resultCount = useAppSelector((state) => state.globalReducer.searchItemCount);
     const cachedPages = useAppSelector(searchMoviesCachedPagesSelector);
+    const [localTerm, setLocalTerm] = useState("");
+
+    // Keeping our search value while going back & forth
+    useEffect(() => {
+        setLocalTerm(searchTerm);
+    }, []);
 
     const searchApiCallHandler = useCallback(async (response: Response) => {
         if (response.ok) {
@@ -65,10 +71,12 @@ export const Search: React.FC<SearchProps> = () => {
         debounce((text: string) => {
             if (text) {
                 dispatch(setUiLocked(true));
+                dispatch(setSearchTerm(text));
 
                 appApi.fetchMovieSearch(text, 1, searchApiCallHandler, (_reason) => {
                     dispatch(setError(true));
                 });
+            } else {
             }
         }, DEBOUNCE_AMOUNT),
         []
@@ -87,16 +95,18 @@ export const Search: React.FC<SearchProps> = () => {
                 aria-label="search"
                 className={styles.search_input}
                 placeholder="for a movie"
-                value={searchTerm}
+                value={localTerm}
                 type="text"
                 onChange={(e) => {
                     const value = e.target.value;
 
                     if (value) {
-                        dispatch(setSearchTerm(value));
-                        performSearch(e.target.value);
+                        setLocalTerm(value);
+                        performSearch(value);
                     } else {
                         dispatch(clearSearch());
+                        setLocalTerm("");
+                        dispatch(setSearchTerm(""));
                     }
                 }}
             />

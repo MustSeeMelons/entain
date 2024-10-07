@@ -13,9 +13,14 @@ import {
 } from "../test-utils";
 import { setupServer } from "msw/node";
 import { http, HttpResponse } from "msw";
-import { IMovieListResponse, OUR_PER_PAGE } from "../../src/store/global-slice";
+import { IMovieListResponse } from "../../src/store/global-slice";
 import userEvent from "@testing-library/user-event";
-import { ANIMATION_DELAY, DEBOUNCE_AMOUNT, UNLOCK_DELAY } from "../../src/definitions";
+import {
+    ANIMATION_DELAY,
+    DEBOUNCE_AMOUNT,
+    OUR_PER_PAGE,
+    UNLOCK_DELAY,
+} from "../../src/definitions";
 
 const LOAD_DELAY = UNLOCK_DELAY + ANIMATION_DELAY;
 

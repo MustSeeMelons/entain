@@ -1,6 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { AppState } from "../store/store";
-import { OUR_PER_PAGE } from "../store/global-slice";
+import { OUR_PER_PAGE } from "../definitions";
 
 export const isUiLockedSelector = createSelector(
     (state: AppState) => state,
@@ -76,4 +76,14 @@ export const isSearchModeSelector = createSelector(
     (state) => {
         return state.globalReducer.searchTerm !== "";
     }
+);
+
+export const discoverMoviesTotalPageSelector = createSelector(
+    (state: AppState) => state,
+    (state) => state.globalReducer.discoverMoviesPageCount
+);
+
+export const searchMoviesTotalPageSelector = createSelector(
+    (state: AppState) => state,
+    (state) => state.globalReducer.searchPageCount
 );

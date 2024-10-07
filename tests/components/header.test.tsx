@@ -13,7 +13,5 @@ describe("Header", () => {
 
         expect(paragraph).toBeInTheDocument();
         expect(paragraph).toHaveTextContent(/Entain Practical Task/i);
-
-        screen.debug();
     });
 });

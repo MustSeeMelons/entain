@@ -1,10 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-// Warning: Chaning this wont magically scale, must update `getDiscoverMovies` too!
-export const API_PER_PAGE: number = 20;
-export const OUR_PER_PAGE: number = 10;
-
-const PAGE_THRESHOLD = API_PER_PAGE / OUR_PER_PAGE;
+import { PAGE_THRESHOLD } from "../definitions";
 
 export interface IDiscoverMovieEtry {
     adult: boolean;
@@ -31,11 +26,13 @@ export interface IMovieListResponse {
     total_results: number;
 }
 
+// XXX If this app grows, store full API responses in the state, no reason to split them up into props
 export interface IGlobalState {
     isUiLocked: boolean;
     isUiUnlocking: boolean;
     // XXX We could add a expiration time for each entry, probably should
     discoverMovies: { [key: string]: IDiscoverMovieEtry[] };
+    discoverMoviesPageCount: number;
     searchMovies: { [key: string]: IDiscoverMovieEtry[] };
     // Can't configure per page on the API, faking it on our end to meet expectations
     apiDiscoverMoviesPage: number;
@@ -52,6 +49,7 @@ const initialState: IGlobalState = {
     isUiLocked: true,
     isUiUnlocking: false,
     discoverMovies: {},
+    discoverMoviesPageCount: 1,
     searchMovies: {},
     apiDiscoverMoviesPage: 1,
     ourDiscoverMoviesPage: 1,
@@ -142,6 +140,9 @@ const globalSlice = createSlice({
         setError: (state: IGlobalState, action: PayloadAction<boolean>) => {
             state.isError = action.payload;
         },
+        setDiscoverDetails: (state: IGlobalState, action: PayloadAction<number>) => {
+            state.discoverMoviesPageCount = action.payload;
+        },
     },
 });
 
@@ -158,5 +159,6 @@ export const {
     setSearchTerm,
     setSearchDetails,
     setError,
+    setDiscoverDetails,
 } = globalSlice.actions;
 export { reducer as globalReducer };
